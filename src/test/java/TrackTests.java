@@ -22,6 +22,9 @@ public class TrackTests {
         //$(By.className("task-assignee")).shouldHave(text("Пётр Иванов"));
 
         ElementsCollection allCards = $$x("//div[@class='task-assignee']");
+
+        System.out.println("Найдено всего карточек: " + allCards.size());
+
         for (SelenideElement el : allCards) {
             System.out.println(el.$x("./..").text());
             el.shouldHave(text("Пётр Иванов"));
