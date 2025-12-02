@@ -1,0 +1,115 @@
+<html>
+<head>
+    <title>Расчёт стоимости билета в кино</title>
+    <meta charset="utf-8">
+</head>
+<body>
+    <h2>Расчёт стоимости билета в кино</h2>
+    
+    <form id="ticketForm">
+        Укажите возраст (число полных лет): <input type="number" id="age" min="0" max="99" value="">
+        <br><br>
+        Дата сеанса: <input type="date" id="date" min="" value="">
+        <br><br>
+        Начало сеанса: <br>
+            <input type="radio" name="session" value="09:30">09:30  
+            <input type="radio" name="session" value="11:00">11:00  
+            <input type="radio" name="session" value="12:30">12:30  
+            <input type="radio" name="session" value="14:00">14:00  
+            <input type="radio" name="session" value="16:00">16:00  
+        <br>
+            <input type="radio" name="session" value="17:30">17:30  
+            <input type="radio" name="session" value="19:00">19:00  
+            <input type="radio" name="session" value="20:30">20:30  
+            <input type="radio" name="session" value="22:00">22:00  
+            <input type="radio" name="session" value="23:30">23:30  
+        <br><br>
+        Название фильма: <br>
+        <input type="radio" name="film" value="back">Назад в будущее - PG (12+)<br>        
+        <input type="radio" name="film" value="crime">Криминальное чтиво - R (18+)<br>
+        <input type="radio" name="film" value="king">Король-лев - G (0+)<br>
+        <input type="radio" name="film" value="killers">Прирождённые убийцы - NC-17 (18+)<br>
+        <input type="radio" name="film" value="tango">Последнее танго в Париже - NC-17 (18+)<br>        
+        <br>      
+        <input type="button" value="Рассчитать" onclick="calculatePrice()">
+    </form>
+    <br>
+    <div id="result"> 
+    Стоимость билета: 
+    *нажмите кнопку для расчёта*    
+    </div>  
+    
+    <br><br><br><br>
+    <a href="..">Список версий</a>
+
+    <script>
+        // Устанавливаем минимальную дату на завтра
+        const today = new Date();
+        today.setDate(today.getDate() + 1);
+        const minDate = today.toISOString().split('T')[0];
+        document.getElementById("date").setAttribute("min", minDate);
+
+        function calculatePrice() {
+            const age = parseInt(document.getElementById("age").value);
+            const date = document.getElementById("date").value;
+            const session = document.querySelector('input[name="session"]:checked');
+            const film = document.querySelector('input[name="film"]:checked');
+
+            let errorMessage = ''
+;
+            if (isNaN(age) || age < 0 || age > 99) {
+                errorMessage += 'Введите корректный возраст. ';
+            }
+            if (!date) {
+                errorMessage += 'Выберите дату сеанса. ';
+            }
+            if (!session) {
+                errorMessage += 'Выберите время сеанса. ';
+            }
+            if (!film) {
+                errorMessage += 'Выберите фильм. ';
+            }
+
+            if (errorMessage) {
+                document.getElementById("result").innerText = errorMessage;
+                return;
+            }
+
+            let filmAgeRestriction = {
+                back: 12,
+                crime: 18,
+                king: 0,
+                killers: 18,
+                tango: 18
+            }[film.value];
+
+            if (age < filmAgeRestriction) {
+                document.getElementById("result").innerText = 'Возраст не подходит для просмотра выбранного фильма.';
+                return;
+            }
+
+            let basePrice = 500;
+            let discount = 0;
+
+            // Скидка для детей
+            if (age < 6) {
+                discount += 250;
+            }
+
+            // Скидка буднего дня
+            const sessionDate = new Date(date);
+            if (sessionDate.getDay() !== 0 && sessionDate.getDay() !== 6) { // Если это не выходной
+                discount += 100;
+            }
+
+            // Скидка на утренние сеансы
+            if (session.value < "14:00") {
+                discount += 50;
+            }
+
+            const totalPrice = basePrice - discount;
+            document.getElementById("result").innerText = `Стоимость билета: ${totalPrice} рублей`;
+        }
+    </script>
+</body>
+</html>
