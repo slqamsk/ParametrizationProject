@@ -18,20 +18,20 @@ public class CinemaTests {
 
     @Test
     void test01_simple_cinema() {
-        open("http://92.51.36.108:7777/sl.qa/cinema/index.php");
+        open("https://slqamsk.github.io/cases/cinema/v02");
         $("input[name=age]").setValue("35");
-        String dateValue = "2025-04-15"; // Дата в формате YYYY-MM-DD
+        String dateValue = "28.07.2026"; // Дата в формате YYYY-MM-DD
         $("input[name='date']").setValue(dateValue);
-        $("input[name=session][value='3']").click();
+        $x("//input[@name='session' and @value='14:00']").click();
         $("input[name=film][value=crime]").click();
-        $("input[type=submit").click();
-        $("div").shouldHave(text("Стоимость билета: 350 рублей."));
+        $x("//button[@type='submit']").click();
+        $x("//div[@id='result']").shouldHave(text("Стоимость билета: 400 рублей."));
     }
 
     @ParameterizedTest
     @CsvFileSource(resources = "data.csv", numLinesToSkip = 1)
     void test02_param_cinema(String age, String dateValue, String start, String film, String priceMessage) {
-        open("http://92.51.36.108:7777/sl.qa/cinema/index.php");
+        open("https://slqamsk.github.io/cases/cinema/");
         $("input[name=age]").setValue(age);
         $("input[name='date']").setValue(dateValue); // Дата в формате YYYY-MM-DD
         $("input[name=session][value='" + start + "']").click();
