@@ -3,6 +3,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -29,8 +30,31 @@ public class CinemaTests {
     }
 
     @ParameterizedTest
+    @CsvFileSource(resources = "cinama_data.csv", numLinesToSkip = 1)
+    // Как Excel заставить сохранять значения с разделителем запятая
+    // Почему он стал требовать заключать значения в кавычки
+    // Почему для параметра session он эти кавычки принял как часть значения
+    void test02CinemaParametrized(String age, String date, String session, String film, String message) {
+        open("https://slqamsk.github.io/cases/cinema/v02");
+        $("input[name=age]").setValue(age);
+        //String dateValue = "28.07.2026"; // Дата в формате YYYY-MM-DD
+        $("input[name='date']").setValue(date);
+        $x("//input[@name='session' and @value=" + session + "]").click();
+        $("input[name=film][value='" + film + "']").click();
+        $x("//button[@type='submit']").click();
+        $x("//div[@id='result']").shouldHave(text(message));
+        //sleep(5_000);
+    }
+
+
+
+
+
+
+    @ParameterizedTest
     @CsvFileSource(resources = "data.csv", numLinesToSkip = 1)
-    void test02_param_cinema(String age, String dateValue, String start, String film, String priceMessage) {
+    @Disabled
+    void test02_param_cinema_old(String age, String dateValue, String start, String film, String priceMessage) {
         open("https://slqamsk.github.io/cases/cinema/");
         $("input[name=age]").setValue(age);
         $("input[name='date']").setValue(dateValue); // Дата в формате YYYY-MM-DD
